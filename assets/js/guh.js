@@ -15,7 +15,7 @@
       streetViewControl: false,
       disableDefaultUI: true,
       styles: [
-        {"stylers": [{"hue": "#FFCC33"}]},
+        {"stylers": [{"hue": "#660099"}]},
         {"featureType": "road", "elementType": "labels", "stylers": [{"visibility": "on"}]},
         {
           "featureType": "road", "elementType": "geometry", "stylers": [{"lightness": 100},
