@@ -13,6 +13,7 @@
       scrollwheel: false,
       navigationControl: false,
       streetViewControl: false,
+      draggable:false,
       disableDefaultUI: true,
       styles: [
         {"stylers": [{"hue": "#660099"}]},
@@ -31,4 +32,5 @@
   }
 
   google.maps.event.addDomListener(window, 'load', initialize);
+
 })();

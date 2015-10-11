@@ -5,6 +5,8 @@
  * Thanks for MaterializeCSS.com
  */
 
+
+
 .default_color {
   background-color: #660099 !important
 }
@@ -28,7 +30,7 @@
   padding-top: 4rem;
 }
 
-.logo {
+.logo img{
   width: 100%;
 }
 
@@ -131,7 +133,6 @@ nav ul a {
   -o-transform: translateY(-50%);
   transform: translateY(-50%);
   height: 90%;
-  width: 1px;
   background-color: #aebcb9;
 }
 
