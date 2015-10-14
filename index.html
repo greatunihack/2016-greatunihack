@@ -411,7 +411,7 @@
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <form class="col s12" action="contact.php" method="post">
+                <form class="col s12" action="#" method="post" id="the-form">
                     <div class="row">
                         <div class="input-field col s6">
                             <i class="mdi-action-account-circle prefix white-text"></i>
@@ -472,6 +472,8 @@
 
 <script src="assets/min/jquery-2.1.4.min.js"></script>
 <script src="assets/js/guh.js"></script>
-
+<script type="text/javascript">
+    (function (window, undefined){$("#the-form").on("submit",function (e){e.preventDefault();$.post("./process_form.php", $("#the-form").serialize(),function (r){$.parseJSON(r)[0]=="success"&&$("#contact-success").html("Message sent successfully!")&&$("#contact-error").html("")||($.parseJSON(r)[0]=="error"&&$("#contact-error").html($.parseJSON(r)[1])&&$("#contact-success").html(""))})});})(window, undefined);
+</script>
 </body>
 </html>

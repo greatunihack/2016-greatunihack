@@ -1,101 +1,53 @@
 <?php
-
-if(isset($_POST['email'])) {
-
-    $email_to = "contact@greatunihack.com";
-
-    $email_subject = "[2016 Spring] Contact"
-
-
-    function died($error) {
-
-        // your error code can go here
-
-        echo "We are very sorry, but there were error(s) found with the form you submitted. ";
-
-        echo "These errors appear below.<br /><br />";
-
-        echo $error."<br /><br />";
-
-        echo "Please go back and fix these errors.<br /><br />";
-
-        die();
-
-    }
-
-
-
-    // validation expected data exists
-
-    if(!isset($_POST['name']) ||
-
-        !isset($_POST['email']) ||
-
-        !isset($_POST['message'])) {
-
-        died('We are sorry, but there appears to be a problem with the form you submitted.');
-
-    }
-
-
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $message = $_POST['message'];
-
-
-    $email_message = "Form details below.\n\n";
-
-
-
-    function clean_string($string) {
-
-      $bad = array("content-type","bcc:","to:","cc:","href");
-
-      return str_replace($bad,"",$string);
-
-    }
-
-
-
-    $email_message .= "Name: ".clean_string($name)."\n";
-
-    $email_message .= "Email: ".clean_string($email)."\n";
-
-    $email_message .= "Message: ".clean_string($message)."\n";
-
-
-	// create email headers
-
-	$headers = 'From: '.$email."\r\n".
-
-	'Reply-To: '.$email."\r\n" .
-
-	'X-Mailer: PHP/' . phpversion();
-
-	@mail($email_to, $email_subject, $email_message, $headers);
-
-
-?>
-
-
-
-<!-- include your own success html here -->
-
-<head>
-   <!-- HTML meta refresh URL redirection -->
-   <meta http-equiv="refresh"
-   content="0; url=http://www.greatunihack.com">
-</head>
-<body>
-Thank you for contacting us. Will be in touch with you very soon.
-
-</body>
-
-
-
-
-<?php
-
+if(!session_id()) {
+  session_start();
 }
-
+try
+{
+  if(isset($_SESSION['has_sent']) && strtotime($_SESSION['has_sent']) + 60 > strtotime("now")) {    
+    throw new Exception("You have already sent a message. Try again after a minute.", 1);
+  }
+  if(!isset($_POST['name'], $_POST['email'], $_POST['message']) 
+    || !$_POST['name'] || !$_POST['email'] || !$_POST['message']) {
+    throw new Exception("Error. Invalid input.", 1);
+  }
+  $email = trim($_POST['email']);
+  $name = ucwords(htmlentities(trim($_POST['name'])));
+  $msg = ucfirst(htmlentities(trim($_POST['message'])));
+  $date = date('d-m-Y H:i:s');
+  $to = "contact@greatunihack.com";
+  $subject = "[2016s]Contact query";
+  $headers = "From: " . $name . " < " . strip_tags($email) . " >\r\n";
+  $headers .= "Reply-To: " . $name . " < " . strip_tags($email) . " >\r\n";
+  $headers .= "MIME-Version: 1.0\r\n";
+  $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+  $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+  $headers .= "X-Priority: 2\r\n";
+  $message = 
+  "
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>$subject</title>
+  </head>
+  <body>
+    You have a new message from $name:
+    <br>
+    $msg
+    <br>
+    Date: $date
+  </body>
+  </html>
+  ";
+  if(!mail($to, $subject, $message, $headers)) {
+    throw new Exception("Error sending email. Please try again or contact the administrator.", 1);
+  }
+  $_SESSION['has_sent'] = $date;
+  echo json_encode(["success"]);
+  exit();
+}
+catch (Exception $e) {
+  echo json_encode(["error", $e->getMessage()]);
+  exit();
+}
 ?>
